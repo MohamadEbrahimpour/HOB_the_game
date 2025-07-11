@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HOB Counter Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>HOB Game</h2>
+<p>Enter the next correct number or "HOB" if it's a multiple of 5. You go first.</p>
+<div id="log"></div>
+<input type="text" id="input" />
+<button onclick="submit()">Submit</button>
+
+<script>
+  let expectedNumber = 1;
+  let isUserTurn = true;
+  let waitingForCorrection = false;
+  const log = document.getElementById('log');
+
+  function logMessage(message) {
+    log.textContent += message + '\n';
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function isHOBNumber(num) {
+    return num % 5 === 0;
+  }
+
+  function submit() {
+    const inputBox = document.getElementById('input');
+    const input = inputBox.value.trim();
+    inputBox.value = '';
+
+    if (!isUserTurn) {
+      logMessage("Wait! It's not your turn.");
+      return;
+    }
+
+    const correctAnswer = isHOBNumber(expectedNumber) ? "HOB" : expectedNumber.toString();
+
+    if (input !== correctAnswer) {
+      logMessage(`Incorrect. Expected: "${correctAnswer}"`);
+      waitingForCorrection = true;
+      return;
+    }
+
+    logMessage(`You: ${input}`);
+    expectedNumber++;
+    isUserTurn = false;
+    waitingForCorrection = false;
+
+    setTimeout(serverTurn, 800); // simulate server response
+  }
+
+  function serverTurn() {
+    const correctAnswer = isHOBNumber(expectedNumber) ? "HOB" : expectedNumber.toString();
+    logMessage(`Server: ${correctAnswer}`);
+    expectedNumber++;
+    isUserTurn = true;
+  }
+
+  // Prevent submission while waiting for correction
+  document.getElementById('input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (waitingForCorrection) {
+        const input = e.target.value.trim();
+        const correctAnswer = isHOBNumber(expectedNumber) ? "HOB" : expectedNumber.toString();
+        if (input === correctAnswer) {
+          submit(); // proceed as normal
+        } else {
+          logMessage(`Still incorrect. Expected: "${correctAnswer}"`);
+        }
+      } else {
+        submit();
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

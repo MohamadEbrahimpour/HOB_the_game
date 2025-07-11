@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOB Counter Game</title>
+    <link rel="stylesheet" href="style_v2.css">
+
+</head>
+<body>
+
+<h2>HOB Counter Game</h2>
+<p>Enter the next correct number or "HOB" if it's a multiple of 5. You go first.</p>
+
+<div id="log"></div>
+<div id="controls">
+    <input type="text" id="input" placeholder="Type number or HOB">
+    <button onclick="submit()">Submit</button>
+</div>
+
+
+<script>
+    let expectedNumber = 1;
+    let isUserTurn = true;
+    let waitingForCorrection = false;
+    const log = document.getElementById('log');
+
+    function logMessage(message, sender = 'user') {
+        const msg = document.createElement('p');
+        msg.textContent = message;
+        msg.className = sender;  // You can style 'user' vs 'server' messages
+        log.appendChild(msg);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function isHOBNumber(num) {
+        return num % 5 === 0;
+    }
+
+    function submit() {
+        const inputBox = document.getElementById('input');
+        const input = inputBox.value.trim();
+        inputBox.value = '';
+
+        if (!isUserTurn) {
+        logMessage("Wait! It's not your turn.", 'error');
+        return;
+        }
+
+        const correctAnswer = isHOBNumber(expectedNumber) ? "HOB" : expectedNumber.toString();
+
+        if (input.toUpperCase() !== correctAnswer) {
+        logMessage(`Incorrect. Expected: "${correctAnswer}"`, 'error');
+        waitingForCorrection = true;
+        return;
+        }
+
+        logMessage(`${input}`, 'user');
+        expectedNumber++;
+        isUserTurn = false;
+        waitingForCorrection = false;
+
+        setTimeout(serverTurn, 800);
+    }
+
+    function serverTurn() {
+        const correctAnswer = isHOBNumber(expectedNumber) ? "HOB" : expectedNumber.toString();
+        logMessage(`${correctAnswer}`, 'server');
+        expectedNumber++;
+        isUserTurn = true;
+    }
+
+    document.getElementById('input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+        submit()
+        }
+    });
+</script>
+
+</body>
+</html>
