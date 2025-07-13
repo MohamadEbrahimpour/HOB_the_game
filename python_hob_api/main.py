@@ -1,6 +1,16 @@
 from fastapi import FastAPI, Form, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Game state
 next_number = 1
@@ -9,6 +19,16 @@ expected = None
 
 def check_response(n: int):
     return "HOB" if n % 5 == 0 else n
+
+@app.get("/poll")
+def poll():
+    # Return server message if waiting for user, or empty if server move done
+    global waiting_for_fix, expected, next_number
+    if waiting_for_fix:
+        return JSONResponse(content={"message": f"Waiting for correct input: '{expected}'", "waiting": True})
+    else:
+        # no new server move to report
+        return JSONResponse(content={"message": "", "waiting": False})
 
 @app.post("/play")
 def play(message: int = Form(...)):
