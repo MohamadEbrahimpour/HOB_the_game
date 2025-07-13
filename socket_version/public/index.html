@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Local Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <form id="username_form">
+      <p>Username:</p>
+      <input id="username_input" autocomplete="off" placeholder="Type a username" />      
+      <button id="username_btn">Submit</button>
+  </form>
+  <div id="chat-container" style="display: none;">
+    <ul id="messages"></ul>
+    <form id="form">
+      <input id="input" autocomplete="off" placeholder="Type a message..." />
+      <button>Send</button>
+    </form>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
