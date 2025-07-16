@@ -8,6 +8,23 @@ const form = document.getElementById('form');
 const input = document.getElementById('input');
 const messages = document.getElementById('messages');
 
+function adding_message(content, cname, username=""){
+  const item = document.createElement('li')
+  item.className = cname;
+  if (username === "") {
+    item.textContent = content;
+  } else {
+    const span = document.createElement('span');
+    span.style.fontWeight = 'bold';
+    span.textContent = `${username}: `;
+
+    item.appendChild(span);
+    item.appendChild(document.createTextNode(content));
+  }
+  messages.appendChild(item);
+  messages.scrollTop = messages.scrollHeight;
+}
+
 username_form.addEventListener('submit', (e) => {
   e.preventDefault();
   if (username_input.value) {
@@ -26,16 +43,13 @@ username_form.addEventListener('submit', (e) => {
       }
     });
 
-
-
     socket.on('game message', (msg) => {
-      console.log(msg["username"], username, msg["username"] == username, msg["username"] === username)
       if (msg["username"] == username){
         class_name = "self_message"
       }else{
         class_name = "user_message"
       }
-      adding_message(msg["content"], class_name)
+      adding_message(msg["content"], class_name, msg["username"])
     });
 
 
@@ -44,11 +58,3 @@ username_form.addEventListener('submit', (e) => {
     });
   }
 });
-
-function adding_message(content, cname){
-  const item = document.createElement('li')
-  item.className = cname;
-  item.textContent = content;
-  messages.appendChild(item);
-  messages.scrollTop = messages.scrollHeight;
-}
