@@ -12,14 +12,23 @@ const users = {};
 
 let currentNumber = 1;
 function playHobGame(user_input) {
-  const expected = currentNumber % 5 === 0 ? 'HOB' : currentNumber.toString();
+  if (!isNaN(user_input) || user_input.toUpperCase() === "HOB") {
+    const expected = currentNumber % 5 === 0 ? 'HOB' : currentNumber.toString();
 
-  if (user_input.toString().toUpperCase() === expected.toUpperCase()) {
-    const response = true;
-    currentNumber++;
-    return response;
-  } else {
-    return false;
+    if (user_input.toString().toUpperCase() === expected.toUpperCase()) {
+      currentNumber++;
+      const server_response = currentNumber;
+      currentNumber++;
+      return server_response;
+    } else {
+      return currentNumber % 5 === 0 ? `Wrong (HOB is right)` : `Wrong (${currentNumber} is right)`;
+    }
+  }else if(user_input === "server_game: reset"){
+    currentNumber = 1;
+    return "HOB game reset to 1"
+  }
+  else{
+    return false
   }
 }
 
@@ -32,7 +41,11 @@ io.on('connection', (socket) => {
 
   socket.on('game message', (msg) => {
     const user = users[socket.id] || 'Anonymous';
+    const game_response = playHobGame(msg)
     io.emit('game message', {"username": user, "content": msg});
+    if (game_response){
+      io.emit('server message', game_response);
+    }
   });
 
   socket.on('disconnect', () => {
@@ -45,3 +58,12 @@ io.on('connection', (socket) => {
 server.listen(3000, () => {
   console.log('Server running on"\thttp://localhost:3000');
 });
+
+
+
+function sleep(ms) {
+  const start = Date.now();
+  while (Date.now() - start < ms) {
+    // do nothing
+  }
+}
