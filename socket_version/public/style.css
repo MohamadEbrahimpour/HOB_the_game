@@ -11,6 +11,7 @@ body {
 }
 
 #chat-container {
+  height: 70vh;
   background: white;
   padding: 20px;
   border-radius: 8px;
@@ -18,11 +19,12 @@ body {
 }
 
 #messages {
+  padding: 0 5px !important;
   display: flex;
   flex-direction: column;
   list-style: none;
   padding: 0;
-  height: 300px;
+  height: 100%;
   overflow-y: scroll;
   margin-bottom: 10px;
   border: 1px solid #ddd;
