@@ -5,9 +5,12 @@ body {
   padding: 0;
 }
 
-#chat-container {
+#page_container {
   max-width: 600px;
-  margin: 50px auto;
+  margin: 20px auto;
+}
+
+#chat-container {
   background: white;
   padding: 20px;
   border-radius: 8px;
@@ -73,4 +76,9 @@ button {
 #username_form {
   display: flex;
   flex-direction: row;
+  margin: 10px auto;
+}
+
+#username_form > span {
+  padding: 10px;
 }
